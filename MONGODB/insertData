@@ -1,0 +1,42 @@
+// use forum
+// db.createCollection("posts")
+const obj2={
+    title: "Who can suggest best computer coding book for beginners?",
+    postId: NumberInt(8451),
+    comments: 2,
+    shared: false,
+    tags: [
+      "programming",
+      "coding"
+    ],
+    author: {
+      name: "Emily Watson",
+      nickname: "emily23"
+    }
+}
+const obj3={
+    title: "I want to start my own business. What I need to do first?",
+    postId: NumberInt(3015),
+    comments: 25,
+    shared: true,
+    tags: [
+      "business",
+      "money"
+    ],
+    author: {
+      name: "Bob Hutchinson",
+      nickname: "bob1995"
+    }
+  }
+const obj4={
+    
+    title: "What is the average salary of the junior frontend developer?",
+    postId: NumberInt(1151),
+    comments: 0,
+    shared: false,
+    author: {
+      name: "Mike Forester",
+      nickname: "mikef"
+    }
+};
+db.posts.insertMany([obj2, obj3, obj4])
