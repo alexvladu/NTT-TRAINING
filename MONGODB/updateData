@@ -2,3 +2,8 @@ db.posts.updateOne(
     {postId:1151},
     {$set:{title: "new title"}}
 )
+
+db.posts.updateOne(
+    {postId:1151},
+    {$unset:{title:0}}
+)
