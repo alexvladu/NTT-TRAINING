@@ -7,3 +7,8 @@ db.posts.updateOne(
     {postId:1151},
     {$unset:{title:0}}
 )
+
+db.posts.updateOne(
+    {postId:1151},
+    {$inc: {comments:1}}
+)
