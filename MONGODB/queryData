@@ -1,0 +1,7 @@
+db.getCollection('posts').find({
+
+    $and:[
+        {comments: {$gt: 0}},
+        {comments: {$lt: 5}}
+    ]
+});
