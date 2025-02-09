@@ -5,3 +5,9 @@ db.getCollection('posts').find({
         {comments: {$lt: 5}}
     ]
 });
+
+
+
+db.getCollection('posts').find({}).skip(2).limit(2)
+
+db.getCollection('posts').find({}).sort({comments:1})
