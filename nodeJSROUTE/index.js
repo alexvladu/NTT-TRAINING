@@ -1,6 +1,8 @@
 const fs=require('fs');
 const http=require('http');
 const url=require('url');
+const slugify=require('slugify');
+
 const transformCard=require('./modules/transform-card');
 const path = require('path');
 const overviewHTML=fs.readFileSync('./templates/overview.html', 'utf-8');
@@ -8,6 +10,9 @@ const productHTML=fs.readFileSync('./templates/product.html', 'utf-8');
 const productCardHTML=fs.readFileSync('./templates/product-card.html', 'utf-8');
 const productData=fs.readFileSync('./dev-data/data.json', 'utf-8');
 const productJson=JSON.parse(productData);
+
+const slugs=productJson.map(el => slugify(el.productName, {lower:true}));
+console.log(slugs);
 
 const server=http.createServer((req, res)=>{
     const {query, pathname}=url.parse(req.url, true);
