@@ -4,6 +4,14 @@ const app = express();
 const port=3000;
 
 app.use(express.json());
+app.use((req, res, next) => {
+    console.log(`Request type: ${req.method}, URL: ${req.url}`);
+    next();
+});
+app.use((req, res, next) => {
+    req.request_time=new Date().toISOString();
+    next();
+})
 
 const toursData= JSON.parse(fs.readFileSync('./dev-data/data/tours-simple.json', 'utf-8'));
 
@@ -12,6 +20,7 @@ const getAllTours = (req, res) => {
         status:'success',
         result: toursData.length,
         data: {
+            request_time:req.request_time,
             tours: toursData
         }
 })};
@@ -67,6 +76,7 @@ const deleteTour = (req, res) => {
 
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
 app.route('/api/v1/tours/:id').get(getTour).patch(updatedTour).delete(deleteTour);
+
 
 
 app.listen(port, ()=>{
