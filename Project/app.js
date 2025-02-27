@@ -75,10 +75,33 @@ const deleteTour = (req, res) => {
     });
 }
 
+const getAllUsers= (req, res) => {
+    res.status(500).send('The route is not available');
+}
 
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
-app.route('/api/v1/tours/:id').get(getTour).patch(updatedTour).delete(deleteTour);
+const getUser= (req, res) => {
 
+}
+const createUser= (req, res) => {
+
+}
+const updateUser= (req, res) => {
+
+}
+const deleteUser= (req, res) => {
+
+}
+
+const tourRouter=express.Router();
+tourRouter.route('/').get(getAllTours).post(createTour);
+tourRouter.route('/:id').get(getTour).patch(updatedTour).delete(deleteTour);
+
+const userRouter=express.Router();
+userRouter.route('/').get(getAllUsers).post(createUser);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 
 app.listen(port, ()=>{
