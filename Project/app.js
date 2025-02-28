@@ -1,11 +1,17 @@
 const express = require('express');
-const fs = require('fs');
 const morgan = require('morgan');
+const tourRouter = require('./routes/tourRoutes');
+const userRouter= require('./routes/userRoutes');
+
 const app = express();
 const port=3000;
 
-app.use(morgan('dev'))
+if(process.env.NODE_ENV === 'development')
+    app.use(morgan('dev'));
 app.use(express.json());
+app.use(express.static("./public"));
+
+
 app.use((req, res, next) => {
     console.log(`Request type: ${req.method}, URL: ${req.url}`);
     next();
@@ -15,95 +21,8 @@ app.use((req, res, next) => {
     next();
 })
 
-const toursData= JSON.parse(fs.readFileSync('./dev-data/data/tours-simple.json', 'utf-8'));
-
-const getAllTours = (req, res) => {
-    res.json({
-        status:'success',
-        result: toursData.length,
-        data: {
-            request_time:req.request_time,
-            tours: toursData
-        }
-})};
-
-const getTour= (req, res) => {
-    const tour = toursData.find(t => t.id === parseInt(req.params.id));
-    if(!tour) return res.status(404).json({status: 'fail', message: 'Tour not found'});
-    res.json({
-        status:'success',
-        tour: tour
-    });
-};
-const createTour = (req, res) => {
-    const tourId = toursData[toursData.length-1].id + 1;
-    const newTour = Object.assign({id: tourId}, req.body);
-    toursData.push(newTour);
-    fs.writeFile('./dev-data/data/tours-simple.json', JSON.stringify(toursData), (error) => {
-        if(error) return res.status(500).send('Error writing to file');
-        res.status(201).json({
-            status:'success',
-            data: newTour
-        });
-    });
-};
-
-const updatedTour = (req, res) => {
-    const tourIndex = toursData.findIndex(t => t.id === parseInt(req.params.id));
-    if(tourIndex === -1) return res.status(404).json({status: 'fail', message: 'Tour not found'});
-    const updatedTour = Object.assign(toursData[tourIndex], req.body);
-    toursData[tourIndex] = updatedTour;
-    fs.writeFile('./dev-data/data/tours-simple.json', JSON.stringify(toursData), (error) => {
-        if(error) return res.status(500).send('Error writing to file');
-        res.json({
-            status:'success',
-            data: updatedTour
-        });
-    });
-};
-
-const deleteTour = (req, res) => {
-    const tourIndex = toursData.findIndex(t => t.id === parseInt(req.params.id));
-    if(tourIndex === -1) return res.status(404).json({status: 'fail', message: 'Tour not found'});
-    toursData.splice(tourIndex, 1);
-    fs.writeFile('./dev-data/data/tours-simple.json', JSON.stringify(toursData), (error) => {
-        if(error) return res.status(500).send('Error writing to file');
-        res.json({
-            status:'success',
-            message: 'Tour deleted successfully'
-        });
-    });
-}
-
-const getAllUsers= (req, res) => {
-    res.status(500).send('The route is not available');
-}
-
-const getUser= (req, res) => {
-
-}
-const createUser= (req, res) => {
-
-}
-const updateUser= (req, res) => {
-
-}
-const deleteUser= (req, res) => {
-
-}
-
-const tourRouter=express.Router();
-tourRouter.route('/').get(getAllTours).post(createTour);
-tourRouter.route('/:id').get(getTour).patch(updatedTour).delete(deleteTour);
-
-const userRouter=express.Router();
-userRouter.route('/').get(getAllUsers).post(createUser);
-userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
-
-app.listen(port, ()=>{
-    console.log(`Server is running on port ${port}`);
-});
+module.exports = app;
