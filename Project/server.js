@@ -7,12 +7,11 @@ dotenv.config({path: './config.env'});
 
 const DB=process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
 console.log(DB);
-mongoose.connect(DB)
-.then(con=>{
-    console.log('Connected to MongoDB');
-});
+(async()=>{
+    await mongoose.connect(DB);
 
-const port=process.env.PORT;
-app.listen(port, ()=>{
-    console.log(`Server is running on port ${port}`);
-});
+    const port=process.env.PORT;
+    app.listen(port, ()=>{
+        console.log(`Server is running on port ${port}`);
+    });
+})();
