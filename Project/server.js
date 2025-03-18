@@ -15,3 +15,5 @@ console.log(DB);
         console.log(`Server is running on port ${port}`);
     });
 })();
+
+//TEST

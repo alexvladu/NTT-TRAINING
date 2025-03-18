@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const validator = require('validator');
 const tourSchema= new mongoose.Schema({
     name:{
         type:String,
         required:[true, 'Tour name is required'],
+        maxLength:[50, "The tour name can't exceed 50 characters"],
+        minLength:[5, "The tour name need to be at least 5 characters"],
     },
     slugName:String,
     duration:{
@@ -19,11 +22,16 @@ const tourSchema= new mongoose.Schema({
     difficulty:{
         type:String,
         required:[true, 'Tour difficulty is required'],
-        enum:['easy', 'medium', 'difficult']
+        enum:{
+            values:['easy', 'medium', 'difficult'],
+            message:'Difficulty must be easy, medium or difficult'
+        }
     },
     ratingsAverage:{
         type:Number,
-        default:0
+        default:4.5,
+        minimum:[0, "Rating should be greater than 0"],
+        maximum:[5, "Rating should be less than 5"]
     },
     ratingsQuantity:{
         type:Number,
