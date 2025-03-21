@@ -2,6 +2,7 @@ const fs=require('fs');
 const Tour=require('../models/tourModel');
 const APIFeatures=require('../utils/apiFeatures');
 const catchAsync=require('../utils/catchAsync');
+const AppError=require('../utils/appError');
 const { json } = require('stream/consumers');
 
 exports.checkBody= (req, res, next) =>{
@@ -63,7 +64,9 @@ exports.updatedTour = catchAsync(async (req, res, next) => {
     const tour=await Tour.findByIdAndUpdate(req.params.id, req.body,{
         new: true,
         runValidators: true
-    })
+    });
+    if(!tour)
+        return next(new AppError('No tour found with that ID', 404));
     res.status(200).json({
         status:'success',
         tour
@@ -71,7 +74,9 @@ exports.updatedTour = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteTour = catchAsync(async (req, res, next) =>{
-    const tour=await Tour.findByIdAndDelete(req.params.id,);
+    const tour=await Tour.findByIdAndDelete(req.params.id);
+    if(!tour)
+        return next(new AppError('No tour found with that ID', 404));
     res.status(200).json({
         status:'success',
         data:{
