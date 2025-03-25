@@ -33,6 +33,7 @@ const userSchema=new mongoose.Schema({
             message: 'Passwords do not match'
         }
     },
+    passwordChangedAt:Date,
     role:{
         type:String,
         enum: ['user', 'admin'],
@@ -50,6 +51,13 @@ userSchema.pre('save', async function(next){
 
 userSchema.methods.checkPassword= async function(candidatePassword, userPassword){
     return await bcrypt.compare(candidatePassword, userPassword);
+}
+
+userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
+    if(this.passwordChangedAt){
+        //TO DO
+    }
+    return false;
 }
 
 const User=mongoose.model('User', userSchema);

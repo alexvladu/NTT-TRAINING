@@ -25,6 +25,8 @@ const sendErrorProd = (err, res)=>{
         })
     }
 }
+const handleJWTError = () => new AppError("Invalid token, please try again", 401);
+const handleTokenExpiredError = () => new AppError("Token expired, please try again", 401);
 //TO DO sec.120 121 122 123
 module.exports=(err, req, res, next) => {
     err.statusCode = err.statusCode || 500;    
@@ -40,6 +42,8 @@ module.exports=(err, req, res, next) => {
           );
         if(error.name==='CastError')
             error=handleCastError(error);
+        if(error.name==='JsonWebTokenError') error=handleJWTError();
+        if(error.name==='TokenExpiredError') error=handleTokenExpiredError();
         sendErrorProd(error, res);
     }
 }
