@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+const User = require('./userModel');
+const Review = require('./reviewModel');
 const tourSchema= new mongoose.Schema({
     name:{
         type:String,
@@ -68,7 +70,35 @@ const tourSchema= new mongoose.Schema({
     secretTour:{
         type:Boolean,
         default:false
-    }
+    },
+    startLocation:{
+        type:{
+            type: String,
+            default: 'Point',
+            enum: ['Point']
+        },
+        coordinates: [Number],
+        address: String,
+        description: String
+    },
+    locations:[
+        {
+            type:{
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            coordinates: [Number],
+            address: String,
+            description: String
+        }
+    ],
+    guides:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref: 'User'
+        }
+    ]
     
 },{
     toJSON:{
@@ -82,8 +112,29 @@ tourSchema.virtual('durationWeeks').get(function(){
     return this.duration/7;
 })
 
+tourSchema.virtual('reviews', {
+    ref:'Review',
+    foreignField:'tour',
+    localField:'_id'
+});
+
 tourSchema.pre('save', function(next){
     this.slugName=slugify(this.name, {lower:true, strict:true});
+    next();
+})
+/*
+EMBEDDING 
+tourSchema.pre('save', function(next){
+    const guidesPromises = this.guides.map(async id=>await User.findById(id));
+    this.guides=Promise.all(guidesPromises);
+    next();
+})
+*/
+tourSchema.pre(/^find/, function(next){
+    this.populate({
+        path: 'guides',
+        select:'-__v -passwordChangedAt'
+    });
     next();
 })
 
@@ -94,7 +145,6 @@ tourSchema.pre(/^find/, function(next){
 })
 tourSchema.post(/^find/, function(docs, next){
     console.log(`Query took: ${Date.now()-this.start} miliseconds`);
-    this.find({secretTour:{$ne: true}});   
     next();
 })
 tourSchema.pre('aggregate', function(next){

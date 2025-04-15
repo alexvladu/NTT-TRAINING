@@ -1,7 +1,6 @@
 const {promisify}=require('util');
 const User=require('../models/userModel');
 const jwt = require('jsonwebtoken');
-const rateLimit = require('express-rate-limit');
 const catchAsync = require('../utils/catchAsync');
 const crypto = require('crypto');
 const AppError = require('../utils/appError');
