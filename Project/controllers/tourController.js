@@ -5,12 +5,6 @@ const catchAsync=require('../utils/catchAsync');
 const AppError=require('../utils/appError');
 const factory=require('./handlerFactory');
 
-exports.checkBody= (req, res, next) =>{
-    if(!req.body.name || !req.body.price)
-        return res.status(400).json({status: 'fail', message: 'Missing name or price in request body'});
-    next();
-}
-
 exports.aliasTopTours = (req, res, next) =>{
     req.query.limit=5;
     req.query.sort='-avgRating,price';

@@ -2,11 +2,14 @@ const express=require('express');
 const reviewControler=require('../controllers/reviewController');
 const authController=require('../controllers/authController');
 const router=express.Router({mergeParams:true});
+
+router.use(authController.protect);
+
 router.route('/')
     .get(reviewControler.getAllReviews)
-    .post(authController.protect, reviewControler.setTourUserIds, reviewControler.createReview);
+    .post(authController.restrictTo('user'), reviewControler.setTourUserIds, reviewControler.createReview);
 router.route('/:id')
-    .patch(reviewControler.updateReview)
-    .delete(authController.protect, reviewControler.deleteReview);
+    .patch(authController.restrictTo('user', 'admin'), reviewControler.updateReview)
+    .delete(authController.restrictTo('user', 'admin'), reviewControler.deleteReview);
 
 module.exports=router;
