@@ -78,3 +78,60 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next)=>{
         }
     });
 })
+
+exports.getToursWithin=catchAsync(async(req, res, next)=>{
+    const {distance, latlng, unit}=req.params;
+    const [lat, lng] = latlng.split(',');
+
+    if(!lat || !lng)
+        next(new AppError("Please provide latitude and longitude in the format lat,lng"), 400);
+
+    const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+    const tours = await Tour.find({ 
+        startLocation: {
+            $geoWithin:{
+                $centerSphere: [[lng*1, lat*1], radius]
+            }
+        }
+    });
+    res.status(200).json({
+        status:'success',
+        tours
+    });
+});
+
+exports.getDistances = catchAsync(async(req, res, next)=>{
+    const {latlng, unit}=req.params;
+    const [lat, lng] = latlng.split(',');
+
+    if(!lat || !lng)
+        next(new AppError("Please provide latitude and longitude in the format lat,lng"), 400);
+
+    //const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+    const distances=await Tour.aggregate([
+        {
+            $geoNear:{
+                near:{
+                    type:'Point',
+                    coordinates: [lng*1, lat*1]
+                },
+                distanceField: 'distance'
+            }
+        },
+        {
+            $project:{
+                distance:1,
+                name:1
+            }
+        }
+    ]);
+
+    res.status(200).json({
+        status: 'success',
+        data:{
+            distances
+        }
+    })
+});
