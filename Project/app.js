@@ -62,6 +62,12 @@ app.use(hpp({
     ]
 }));
 
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy",
+        "script-src 'self' 'unsafe-inline' https://api.mapbox.com; worker-src 'self' blob:;");
+    next();
+});
+
 
 
 

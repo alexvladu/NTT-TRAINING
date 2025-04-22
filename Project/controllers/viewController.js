@@ -12,17 +12,18 @@ exports.getOverview = catchAsync(async (req, res, next) =>{
         tours
     });
 });
-exports.getTour = catchAsync(async(req, res) =>{
-
+exports.getTour = catchAsync(async(req, res, next) =>{
     //1 get the data)
     const {slug} = req.params;
     const tour=await Tour.findOne({slugName:slug}).populate({
         path:'reviews',
         fields:'review rating user'
     });
-    console.log(tour.reviews[0]);
     res.status(200).render('tour', {
         title: `${tour.name} Tour`,
         tour
     });
+});
+exports.getLogin = catchAsync(async (req, res, next)=>{
+    res.status(200).render('login');
 });
