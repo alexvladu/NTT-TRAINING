@@ -20,9 +20,9 @@ exports.getTour = catchAsync(async(req, res) =>{
         path:'reviews',
         fields:'review rating user'
     });
-    console.log(tour);
+    console.log(tour.reviews[0]);
     res.status(200).render('tour', {
-        title: 'The forest hiker',
+        title: `${tour.name} Tour`,
         tour
     });
 });

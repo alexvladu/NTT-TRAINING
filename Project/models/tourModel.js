@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
 const User = require('./userModel');
-const Review = require('./reviewModel');
 const tourSchema= new mongoose.Schema({
     name:{
         type:String,
@@ -61,7 +60,7 @@ const tourSchema= new mongoose.Schema({
         type:String,
         required:[true, 'Tour image cover is required'],
     },
-    imges:[String],
+    images:[String],
     createdAt:{
         type:Date,
         default:Date.now(),
