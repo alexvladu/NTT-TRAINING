@@ -108,7 +108,7 @@ exports.getDistances = catchAsync(async(req, res, next)=>{
     if(!lat || !lng)
         next(new AppError("Please provide latitude and longitude in the format lat,lng"), 400);
 
-    //const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+    const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
 
     const distances=await Tour.aggregate([
         {
@@ -117,7 +117,8 @@ exports.getDistances = catchAsync(async(req, res, next)=>{
                     type:'Point',
                     coordinates: [lng*1, lat*1]
                 },
-                distanceField: 'distance'
+                distanceField: 'distance',
+                distanceMultiplier: multiplier
             }
         },
         {
