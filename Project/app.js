@@ -37,7 +37,7 @@ const limiter=rateLimit({
 app.use('/api', limiter);
 
 //SET SECURITY HTTP HEADERS
-//app.use(helmet());
+app.use(helmet());
 
 
 //BODY PARSER reading data from body to req.body
@@ -65,7 +65,7 @@ app.use(hpp({
 }));
 
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://127.0.0.1:3000",
 }));
 
 app.use(cookieParser());
@@ -88,8 +88,6 @@ app.use((req, res, next) => {
 });
 app.use((req, res, next) => {
     req.request_time=new Date().toISOString();
-    console.log(req.cookies);
-    console.log(req);
     next();
 })
 

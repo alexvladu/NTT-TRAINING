@@ -6,7 +6,6 @@ const map = new mapboxgl.Map({
     style: 'mapbox://styles/alex1240/cm9ss7lu800jp01sb3b13dzr8',
 });
 const locations=JSON.parse(document.getElementById("map").dataset.locations);
-console.log(locations[0]);
 
 const bounds = new mapboxgl.LngLatBounds();
 locations.forEach(loc=>{
