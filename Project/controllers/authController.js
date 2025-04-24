@@ -13,9 +13,11 @@ const signToken = id =>{
 const createSendToken = (user, statusCode, res) =>{
     const token = signToken(user._id);
 
-    const cookieOptions={
-        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-        httpOnly: true
+    const cookieOptions = {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Expiră în 7 zile
+        secure: false,
+        httpOnly: false,
+        sameSite: 'None'
     };
 
     if(process.env.NODE_ENV === 'production') cookieOptions.secure=true;

@@ -4,6 +4,8 @@ const rateLimit = require('express-rate-limit');
 const helmet=require('helmet');
 const mongoSanitize=require('express-mongo-sanitize');
 const xss=require('xss-clean');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter= require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -35,7 +37,7 @@ const limiter=rateLimit({
 app.use('/api', limiter);
 
 //SET SECURITY HTTP HEADERS
-app.use(helmet());
+//app.use(helmet());
 
 
 //BODY PARSER reading data from body to req.body
@@ -62,11 +64,20 @@ app.use(hpp({
     ]
 }));
 
+app.use(cors({
+    origin: "http://localhost:3000",
+}));
+
+app.use(cookieParser());
+
 app.use((req, res, next) => {
-    res.setHeader("Content-Security-Policy",
-        "script-src 'self' 'unsafe-inline' https://api.mapbox.com; worker-src 'self' blob:;");
+    res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' https://api.mapbox.com https://cdnjs.cloudflare.com; worker-src 'self' blob:; connect-src 'self' https://api.mapbox.com https://cdnjs.cloudflare.com http://127.0.0.1:3000; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;");
     next();
 });
+
+
+
+
 
 
 
@@ -77,6 +88,8 @@ app.use((req, res, next) => {
 });
 app.use((req, res, next) => {
     req.request_time=new Date().toISOString();
+    console.log(req.cookies);
+    console.log(req);
     next();
 })
 
