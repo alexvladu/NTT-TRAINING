@@ -36,8 +36,6 @@ const limiter=rateLimit({
 //SET LIMITER REQUESTS from same IP
 app.use('/api', limiter);
 
-//SET SECURITY HTTP HEADERS
-app.use(helmet());
 
 
 //BODY PARSER reading data from body to req.body
@@ -70,16 +68,8 @@ app.use(cors({
 
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-    res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' https://api.mapbox.com https://cdnjs.cloudflare.com; worker-src 'self' blob:; connect-src 'self' https://api.mapbox.com https://cdnjs.cloudflare.com http://127.0.0.1:3000; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;");
-    next();
-});
-
-
-
-
-
-
+  
+  
 
 
 app.use((req, res, next) => {
